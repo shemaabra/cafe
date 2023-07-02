@@ -80,32 +80,53 @@ var transporter = nodemailer.createTransport({
   },
 });
 
-router.post("/forgotpassword", (req, res) => {
+router.post("/forgotPassword", (req, res) => {
   const user = req.body;
   query = "select email, password from user where email=?";
   connection.query(query, [user.email], (err, results) => {
     if (!err) {
       if (results.length <= 0) {
-        return  res.status(200).json({message: "Password sent successfully to your email"});
-      }
-      else {
+        return res
+          .status(200)
+          .json({ message: "Password sent successfully to your email" });
+      } else {
         var mailOptions = {
           from: process.env.EMAIL,
           to: results[0].email,
-          subject: 'Password by Cafe Management System',
-          html: '<p><b>Your Login details for cafe Management system</b> <b>Email:</b> '+results[0].email+'<br> <b>Password: '+results[0].password+'</b><a href="http://localhost:4200/login">Click here to login</a></p>' 
+          subject: "Password by Cafe Management System",
+          html:
+            "<p><b>Your Login details for cafe Management system</b> <b>Email:</b> " +
+            results[0].email +
+            "<br> <b>Password: " +
+            results[0].password +
+            '</b><a href="http://localhost:4200/login">Click here to login</a></p>',
         };
-         transporter.sendMail(mailOptions, function(err, info){
+        transporter.sendMail(mailOptions, function (err, info) {
           if (err) {
             console.log(err);
+          } else {
+            console.log("Email sent: " + info.response);
           }
-          else {
-            console.log('Email sent: '+info.response);
-          }
-         });
-         return  res.status(200).json({message: "Password sent successfully to your email"});
+        });
+        return res
+          .status(200)
+          .json({ message: "Password sent successfully to your email" });
       }
     } else {
+      return res.status(500).json(err);
+    }
+  });
+});
+
+
+//get all users
+router.get("/getUser", (res, req)=> {
+  var query = "select id, name, email, contactNumber, status from user where role='user'";
+  connection.query(query, (err, results)=>{
+    if (!err) {
+      return res.status(200).json(results);
+    }
+    else {
       return res.status(500).json(err);
     }
   });
