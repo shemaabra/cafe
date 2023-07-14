@@ -80,6 +80,7 @@ var transporter = nodemailer.createTransport({
   },
 });
 
+// forgot password
 router.post("/forgotPassword", (req, res) => {
   const user = req.body;
   query = "select email, password from user where email=?";
@@ -120,16 +121,44 @@ router.post("/forgotPassword", (req, res) => {
 
 
 //get all users
-router.get("/getUser", (res, req)=> {
+router.get("/get", (req, res)=>{
   var query = "select id, name, email, contactNumber, status from user where role='user'";
-  connection.query(query, (err, results)=>{
-    if (!err) {
+  connection.query(query, (error, results)=>{
+    if (!error) {
       return res.status(200).json(results);
+    }else {
+      return res.results(500).json(error);
     }
-    else {
-      return res.status(500).json(err);
+  })
+});
+
+
+//update user
+router.patch("/update", (req, res)=>{
+  let user = req.body;
+  var query = "update user set status=? where id=?";
+  connection.query(query,[user.status, user.id],(error, results)=>{
+    if (!error) {
+      if (results.affectedRows == 0) {
+        return res.status(404).json({message: "User id does not exist"});
+      }
+      return res.status(200).json({message: "User updated successfully"});
     }
+      else {
+        return res.status(500).json(error);
+      }
+
   });
+});
+
+
+router.get("/checkToken", (req, res)=>{
+  return res.status(200).json({message: "true"});
+});
+
+
+router.post("/changePassword", (req, res)=>{
+
 });
 
 module.exports = router;
