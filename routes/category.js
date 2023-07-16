@@ -32,19 +32,29 @@ router.get("/get", auth.authenticateToken, (req, res, next) => {
   });
 });
 
-
-router.patch("", auth.authenticateToken, checkRole.checkRole, (req, res, next)=>{
-    let  category = req.body;
+router.patch(
+  "/update",
+  auth.authenticateToken,
+  checkRole.checkRole,
+  (req, res, next) => {
+    let category = req.body;
     query = "update category set name=? where id = ?";
-    connection.query(query, [category.name, category.id], (err, resutls)=>{
-        if (!err) {
-            if (res.affectedRows == 0) {
-                return res.status(400).json({message: "Category id does not exist"});
-            }else {
-
-            }
-        }else {
-            return res.status(500).json(err);
+    connection.query(query, [category.name, category.id], (err, resutls) => {
+      if (!err) {
+        if (res.affectedRows == 0) {
+          return res
+            .status(400)
+            .json({ message: "Category id does not exist" });
         }
+        return res
+          .status(200)
+          .json({ message: "Category updates successfull" });
+      } else {
+        return res.status(500).json(err);
+      }
     });
-});
+  }
+);
+
+
+module.exports = router;
