@@ -9,12 +9,19 @@ create table user(
     UNIQUE(email)
 );
 
-insert into user (name, contactNumber, email, password, status, role)values('admin', '0765904173', 'admin@gmail.com', '1223436', 'true', 'admin');
-
-
 create table category (
     id int NOT NULL AUTO_INCREMENT,
     name varchar(255) NOT NULL,
+    primary key(id)
+);
+
+create table product (
+    id int NOT NULL AUTO_INCREMENT,
+    name varchar(255) NOT NULL,
+    categoryId integer NOT NULL,
+    description varchar(255),
+    price integer,
+    status varchar(20),
     primary key(id)
 );
 
