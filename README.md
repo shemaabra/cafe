@@ -5,7 +5,8 @@
 node version 14.15.4
 
 # Database 
-just  run sql commmands on example.sql
+create database 
+just  run sql commmands on example.sql for table creations
 it uses mysql database
 
 # To Run Project
